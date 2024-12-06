@@ -12,7 +12,7 @@ variable "folder_id" {
 variable "description" {
   description = "Description of the trail."
   type        = string
-  default     = ""
+  default     = "Created by yandex terraform module"
 }
 
 variable "labels" {
@@ -43,17 +43,6 @@ variable "object_prefix" {
   default     = null
 }
 
-variable "database_id" {
-  description = "ID of the database (if using data_stream_destination)."
-  type        = string
-  default     = null
-}
-
-variable "stream_name" {
-  description = "Name of the stream (if using data_stream_destination)."
-  type        = string
-  default     = null
-}
 variable "management_events_filter" {
   description = "Optional list of management events filters."
   type = list(object({

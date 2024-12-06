@@ -1,6 +1,6 @@
 module "at" {
   source           = "../"
-  destination_type = "logging" # or storage
+  destination_type = "logging" # or storage or data_stream
   management_events_filter = [
     { resource_id = var.folder_id
     resource_type = "resource-manager.folder" }

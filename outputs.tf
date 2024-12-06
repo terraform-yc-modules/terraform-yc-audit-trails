@@ -12,3 +12,8 @@ output "logging_group_id" {
   description = "ID of the created for audit trail logging group"
   value       = try(yandex_logging_group.this[0].id, null)
 }
+
+output "data_stream_id" {
+  description = "ID of the created for audit trail data stream"
+  value       = try(yandex_ydb_topic.topic[0].id, null)
+}

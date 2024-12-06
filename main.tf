@@ -32,8 +32,8 @@ resource "yandex_audit_trails_trail" "this" {
   dynamic "data_stream_destination" {
     for_each = var.destination_type == "data_stream" ? [1] : []
     content {
-      database_id = var.database_id
-      stream_name = var.stream_name
+      database_id = yandex_ydb_database_serverless.this[0].id
+      stream_name = yandex_ydb_topic.topic[0].name
     }
   }
 
@@ -126,4 +126,34 @@ resource "yandex_kms_symmetric_key_iam_binding" "auto_storage" {
   members          = ["serviceAccount:${var.service_account_id}"]
 }
 
-### Auto Data Streams coming soon
+### Auto Data Streams coming
+
+resource "yandex_ydb_database_serverless" "this" {
+  count               = var.destination_type == "data_stream" ? 1 : 0
+  name                = "for-audit-trail-${var.name}"
+  folder_id           = local.folder_id
+  description         = "Data Streams for audit trail ${var.name}"
+  deletion_protection = false
+  labels              = var.labels
+}
+
+resource "null_resource" "wait_for_ydb" {
+  count = var.destination_type == "data_stream" ? 1 : 0
+  provisioner "local-exec" {
+    command = "sleep 5"
+  }
+}
+
+resource "yandex_ydb_topic" "topic" {
+  count             = var.destination_type == "data_stream" ? 1 : 0
+  database_endpoint = yandex_ydb_database_serverless.this[0].ydb_full_endpoint
+  name              = "for-audit-trail-${var.name}"
+  depends_on        = [yandex_ydb_database_serverless.this, null_resource.wait_for_ydb]
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "ydb" {
+  count     = var.destination_type == "data_stream" ? 1 : 0
+  folder_id = local.folder_id
+  role      = "ydb.editor"
+  member    = "serviceAccount:${var.service_account_id}"
+}

@@ -1,13 +1,6 @@
 
-# database_id        = ""
-# description        = ""
-# stream_name              = ""
-# object_prefix            = ""
-destination_type = "storage"
+destination_type = "data_stream"
 # folder_id          = ""
-# labels = {
-#   "created_by": "yandex-terraform-module"
-# }
 management_events_filter = [
   { resource_id = "b1g1tli4sc25nie2c5g1"
   resource_type = "resource-manager.folder" }
