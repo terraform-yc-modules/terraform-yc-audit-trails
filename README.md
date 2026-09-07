@@ -34,15 +34,15 @@ export YC_FOLDER_ID=$(yc config get folder-id)
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_yandex"></a> [yandex](#requirement\_yandex) | >= 0.134.0 |
+| <a name="requirement_yandex"></a> [yandex](#requirement\_yandex) | >= 0.225.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.3 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.6.3 |
-| <a name="provider_yandex"></a> [yandex](#provider\_yandex) | 0.134.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.3.1 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.9.0 |
+| <a name="provider_yandex"></a> [yandex](#provider\_yandex) | 0.225.0 |
 
 ## Modules
 
@@ -70,12 +70,12 @@ export YC_FOLDER_ID=$(yc config get folder-id)
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_data_events_filter"></a> [data\_events\_filter](#input\_data\_events\_filter) | Optional list of data events filters. | <pre>list(object({<br>    service         = string<br>    resource_id     = string<br>    resource_type   = string<br>    included_events = optional(list(string), [])<br>    excluded_events = optional(list(string), [])<br>  }))</pre> | `[]` | no |
+| <a name="input_data_events_filter"></a> [data\_events\_filter](#input\_data\_events\_filter) | Optional list of data events filters. Use resource\_scopes to monitor multiple resources and include\_rules or exclude\_rules to filter fields within events. | <pre>list(object({<br/>    service       = string<br/>    resource_id   = optional(string)<br/>    resource_type = optional(string)<br/>    resource_scopes = optional(list(object({<br/>      resource_id   = string<br/>      resource_type = string<br/>    })), [])<br/>    included_events = optional(list(string), [])<br/>    excluded_events = optional(list(string), [])<br/>    include_rules = optional(list(object({<br/>      conditions = list(object({<br/>        field    = string<br/>        operator = string<br/>        values   = list(string)<br/>      }))<br/>    })), [])<br/>    exclude_rules = optional(list(object({<br/>      conditions = list(object({<br/>        field    = string<br/>        operator = string<br/>        values   = list(string)<br/>      }))<br/>    })), [])<br/>  }))</pre> | `[]` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description of the trail. | `string` | `"Created by yandex terraform module"` | no |
 | <a name="input_destination_type"></a> [destination\_type](#input\_destination\_type) | Type of destination: 'storage', 'logging', or 'data\_stream'. | `string` | n/a | yes |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | ID of the folder to which the trail belongs. | `string` | `null` | no |
-| <a name="input_labels"></a> [labels](#input\_labels) | Labels defined by the user. | `map(string)` | <pre>{<br>  "created_by": "yandex-terraform-module"<br>}</pre> | no |
-| <a name="input_management_events_filter"></a> [management\_events\_filter](#input\_management\_events\_filter) | Optional list of management events filters. | <pre>list(object({<br>    resource_id   = string<br>    resource_type = string<br>  }))</pre> | `[]` | no |
+| <a name="input_labels"></a> [labels](#input\_labels) | Labels defined by the user. | `map(string)` | <pre>{<br/>  "created_by": "yandex-terraform-module"<br/>}</pre> | no |
+| <a name="input_management_events_filter"></a> [management\_events\_filter](#input\_management\_events\_filter) | Optional list of management events filters. Use resource\_scopes to monitor multiple resources and include\_rules or exclude\_rules to filter fields within events. | <pre>list(object({<br/>    resource_id   = optional(string)<br/>    resource_type = optional(string)<br/>    resource_scopes = optional(list(object({<br/>      resource_id   = string<br/>      resource_type = string<br/>    })), [])<br/>    include_rules = optional(list(object({<br/>      conditions = list(object({<br/>        field    = string<br/>        operator = string<br/>        values   = list(string)<br/>      }))<br/>    })), [])<br/>    exclude_rules = optional(list(object({<br/>      conditions = list(object({<br/>        field    = string<br/>        operator = string<br/>        values   = list(string)<br/>      }))<br/>    })), [])<br/>  }))</pre> | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the trail. | `string` | n/a | yes |
 | <a name="input_object_prefix"></a> [object\_prefix](#input\_object\_prefix) | Additional prefix of the uploaded objects (if using storage\_destination). | `string` | `null` | no |
 | <a name="input_retention_period_bucket"></a> [retention\_period\_bucket](#input\_retention\_period\_bucket) | Number of days to keep logs in the bucket | `number` | `1095` | no |

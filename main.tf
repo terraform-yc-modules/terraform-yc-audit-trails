@@ -41,9 +41,46 @@ resource "yandex_audit_trails_trail" "this" {
     dynamic "management_events_filter" {
       for_each = var.management_events_filter
       content {
-        resource_scope {
-          resource_id   = management_events_filter.value.resource_id
-          resource_type = management_events_filter.value.resource_type
+        dynamic "resource_scope" {
+          for_each = concat(
+            management_events_filter.value.resource_id == null ? [] : [{
+              resource_id   = management_events_filter.value.resource_id
+              resource_type = management_events_filter.value.resource_type
+            }],
+            management_events_filter.value.resource_scopes,
+          )
+          content {
+            resource_id   = resource_scope.value.resource_id
+            resource_type = resource_scope.value.resource_type
+          }
+        }
+
+        dynamic "include_rule" {
+          for_each = management_events_filter.value.include_rules
+          content {
+            dynamic "condition" {
+              for_each = include_rule.value.conditions
+              content {
+                field    = condition.value.field
+                operator = condition.value.operator
+                values   = condition.value.values
+              }
+            }
+          }
+        }
+
+        dynamic "exclude_rule" {
+          for_each = management_events_filter.value.exclude_rules
+          content {
+            dynamic "condition" {
+              for_each = exclude_rule.value.conditions
+              content {
+                field    = condition.value.field
+                operator = condition.value.operator
+                values   = condition.value.values
+              }
+            }
+          }
         }
       }
     }
@@ -52,12 +89,49 @@ resource "yandex_audit_trails_trail" "this" {
       for_each = var.data_events_filter
       content {
         service = data_events_filter.value.service
-        resource_scope {
-          resource_id   = data_events_filter.value.resource_id
-          resource_type = data_events_filter.value.resource_type
+        dynamic "resource_scope" {
+          for_each = concat(
+            data_events_filter.value.resource_id == null ? [] : [{
+              resource_id   = data_events_filter.value.resource_id
+              resource_type = data_events_filter.value.resource_type
+            }],
+            data_events_filter.value.resource_scopes,
+          )
+          content {
+            resource_id   = resource_scope.value.resource_id
+            resource_type = resource_scope.value.resource_type
+          }
         }
         included_events = lookup(data_events_filter.value, "included_events", null)
         excluded_events = lookup(data_events_filter.value, "excluded_events", null)
+
+        dynamic "include_rule" {
+          for_each = data_events_filter.value.include_rules
+          content {
+            dynamic "condition" {
+              for_each = include_rule.value.conditions
+              content {
+                field    = condition.value.field
+                operator = condition.value.operator
+                values   = condition.value.values
+              }
+            }
+          }
+        }
+
+        dynamic "exclude_rule" {
+          for_each = data_events_filter.value.exclude_rules
+          content {
+            dynamic "condition" {
+              for_each = exclude_rule.value.conditions
+              content {
+                field    = condition.value.field
+                operator = condition.value.operator
+                values   = condition.value.values
+              }
+            }
+          }
+        }
       }
     }
   }
